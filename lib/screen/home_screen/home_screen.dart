@@ -9,7 +9,6 @@ class HomeScreen extends GetView<HomeController> {
   static const pageId = '/HomeScreen';
 
   const HomeScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -23,23 +22,23 @@ class HomeScreen extends GetView<HomeController> {
             leadingOnTap: (){
             }, ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 15,),
-                    Text("GIF's", style: CustomTextStyle.headingText,),
-                    const SizedBox(height: 15,),
-                    GridView.builder(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 15,),
+                  Text("GIF's", style: CustomTextStyle.headingText,),
+                  const SizedBox(height: 15,),
+                  controller.dataList.isNotEmpty ?
+                  Expanded(
+                    child: GridView.builder(
+                      controller: controller.scrollController,
                       itemBuilder: (context, index) {
                         return Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: ColorConfig.colorBlurRadius
-
-                          ),
+                            color: ColorConfig.colorBlurRadius),
                           child:
                           SizedBox(
                             height: Get.height*0.25,width: Get.width* 0.40,
@@ -74,12 +73,13 @@ class HomeScreen extends GetView<HomeController> {
                           mainAxisSpacing: 18,
                       ),
                       itemCount: controller.dataList.length,
-                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                     ),
-
-                  ],
-                ),
+                  )
+                  : controller.loader.value == false
+                      ? const Text("No Data Found")
+                      : Container(),
+                ],
               ),
             ),
           ),

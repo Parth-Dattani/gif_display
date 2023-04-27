@@ -8,8 +8,10 @@ import 'controller.dart';
 
 class HomeController extends BaseController {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  //final getImagesModel = Rxn<ImageResponse>();
   RxList<Results> dataList = <Results>[].obs;
+  ScrollController scrollController = ScrollController();
+  RxInt dataLimit = 50.obs;
+  RxBool isPaginateData = false.obs;
 
   final List<String> imgList = [
     "https://picsum.photos/seed/picsum/200/300",
@@ -20,13 +22,22 @@ class HomeController extends BaseController {
 
   @override
   void onInit() {
+    scrollController.addListener(() async {
+      if (scrollController.position.pixels == scrollController.position.maxScrollExtent) {
+        isPaginateData.value = true;
+        if (isPaginateData.value) {
+          dataLimit.value + 10;
+          getData(dataLimit.value);
+        }
+      }
+    });
+    getData(dataLimit.value);
     super.onInit();
-   getData();
   }
 
-  void getData() async {
+  void getData(int dataLimit) async {
     loader.value = true;
-    var response = await RemoteServices.getDataList();
+    var response = await RemoteServices.getDataList(limit:dataLimit);
     if (response.statusCode == 200) {
       var jsonData = json.decode(response.body);
        var data = jsonData['results'];
@@ -37,6 +48,7 @@ class HomeController extends BaseController {
         loader.value = false;
       } else {
         loader.value = false;
+        isPaginateData.value = false;
       }
     }
 

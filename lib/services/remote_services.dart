@@ -13,22 +13,20 @@ class RemoteServices {
     debugPrint('Response status: ${response.statusCode}');
     debugPrint('Response body: ${response.body}');
     debugPrint('Response body: ${response.headers}');
-  //  debugPrint('Response body: ${response.isRedirect}');
   }
 
   static const apiKey = "780X74Y20AF8";
 
-  static Future<http.Response> getDataList() async {
+  static Future<http.Response> getDataList({int? limit}) async {
     Map<String, String> header = {
       // "key": "780X74Y20AF8"
     };
 
     http.Response response = await http.get(
-      Uri.parse('${Apis.imageListApi}?q=funny&key=$apiKey&limit=50'),
+      Uri.parse('${Apis.imageListApi}?q=funny&key=$apiKey&limit=$limit'),
       headers: header,
     );
     printResponse(header, null, response);
     return response;
   }
-
 }
